@@ -1,6 +1,5 @@
 import yfinance as yf
 import streamlit as st
-import json
 
 # Write the header of your Streamlit app
 st.write("""
@@ -19,23 +18,23 @@ try:
     # Get the historical prices for this ticker
     tickerDf = tickerData.history(period='1d', start='2010-5-31', end='2020-5-31')
 
-    # Display the closing price
-    st.write("""
-    ## Closing Price
-    """)
-    st.line_chart(tickerDf.Close)
+    # Check if the data frame is empty
+    if tickerDf.empty:
+        st.write("No data available for the specified date range.")
+    else:
+        # Display the closing price
+        st.write("""
+        ## Closing Price
+        """)
+        st.line_chart(tickerDf.Close)
 
-    # Display the volume price
-    st.write("""
-    ## Volume Price
-    """)
-    st.line_chart(tickerDf.Volume)
+        # Display the volume price
+        st.write("""
+        ## Volume Price
+        """)
+        st.line_chart(tickerDf.Volume)
 
-except json.JSONDecodeError as e:
-    # Handle JSON decode errors
-    st.error("Failed to decode JSON from response: " + str(e))
-    st.write("Please check the API call or response format.")
 except Exception as e:
     # Handle other generic exceptions
     st.error("An error occurred: " + str(e))
-    st.write("Please check your internet connection or API parameters.")
+    st.write("Please check your internet connection, API parameters, or if the API service is available.")
